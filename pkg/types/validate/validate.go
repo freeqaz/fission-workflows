@@ -29,7 +29,7 @@ var (
 	ErrNoParentTaskDependency       = errors.New("dynamic task does not contain parent dependency")
 	ErrMultipleParentTaskDependency = errors.New("dynamic task contains multiple parent tasks")
 	ErrNoWorkflowInvocation         = errors.New("workflow invocation id is required")
-	ErrNoTaskInvocation             = errors.New("task invocation id is required")
+	ErrNoTaskRun                    = errors.New("task run id is required")
 	ErrNoFnRef                      = errors.New("function reference is required")
 	ErrNoWorkflow                   = errors.New("workflow id is required")
 	ErrNoID                         = errors.New("id is required")
@@ -248,8 +248,8 @@ func WorkflowInvocationSpec(spec *types.WorkflowInvocationSpec) error {
 	return errs.getOrNil()
 }
 
-func TaskInvocationSpec(spec *types.TaskInvocationSpec) error {
-	errs := Error{subject: "TaskInvocationSpec"}
+func TaskRunSpec(spec *types.TaskRunSpec) error {
+	errs := Error{subject: "TaskRunSpec"}
 
 	if spec == nil {
 		errs.append(ErrObjectEmpty)
@@ -261,7 +261,7 @@ func TaskInvocationSpec(spec *types.TaskInvocationSpec) error {
 	}
 
 	if len(spec.TaskId) == 0 {
-		errs.append(ErrNoTaskInvocation)
+		errs.append(ErrNoTaskRun)
 	}
 
 	if spec.FnRef == nil {

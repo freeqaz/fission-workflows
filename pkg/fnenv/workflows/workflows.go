@@ -58,8 +58,8 @@ func NewRuntime(api *api.Invocation, wfiCache fes.CacheReader) *Runtime {
 	}
 }
 
-func (rt *Runtime) Invoke(spec *types.TaskInvocationSpec, opts ...fnenv.InvokeOption) (*types.TaskInvocationStatus, error) {
-	if err := validate.TaskInvocationSpec(spec); err != nil {
+func (rt *Runtime) Invoke(spec *types.TaskRunSpec, opts ...fnenv.InvokeOption) (*types.TaskRunStatus, error) {
+	if err := validate.TaskRunSpec(spec); err != nil {
 		return nil, err
 	}
 
@@ -174,7 +174,7 @@ func (rt *Runtime) pollUntilResult(ctx context.Context, wfiID string) (*types.Wo
 	}
 }
 
-func toWorkflowSpec(spec *types.TaskInvocationSpec) (*types.WorkflowInvocationSpec, error) {
+func toWorkflowSpec(spec *types.TaskRunSpec) (*types.WorkflowInvocationSpec, error) {
 
 	// Prepare inputs
 	wfSpec := spec.ToWorkflowSpec()

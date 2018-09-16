@@ -127,10 +127,10 @@ func TestScope(t *testing.T) {
 		},
 		Status: &types.WorkflowInvocationStatus{
 			Status: types.WorkflowInvocationStatus_IN_PROGRESS,
-			Tasks: map[string]*types.TaskInvocation{
+			Tasks: map[string]*types.TaskRun{
 				"fooTask": {
-					Spec: &types.TaskInvocationSpec{},
-					Status: &types.TaskInvocationStatus{
+					Spec: &types.TaskRunSpec{},
+					Status: &types.TaskRunStatus{
 						Output: expectedOutput,
 					},
 				},

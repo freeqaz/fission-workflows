@@ -97,7 +97,7 @@ message WorkflowInvocationStatus {
     }
     Status status = 1;
     google.protobuf.Timestamp updatedAt = 2;
-    map<string, TaskInvocation> tasks = 3;
+    map<string, TaskRun> tasks = 3;
     TypedValue output = 4;
 
     // In case the task ID also exists in the workflow spec, the dynamic task will be
@@ -168,29 +168,29 @@ message TaskDependencyParameters {
 }
 
 //
-// Task Invocation Model
+// Task Run Model
 //
-message TaskInvocation {
+message TaskRun {
     ObjectMetadata metadata = 1;
-    TaskInvocationSpec spec = 2;
-    TaskInvocationStatus status = 3;
+    TaskRunSpec spec = 2;
+    TaskRunStatus status = 3;
 }
 
-message TaskInvocationSpec {
+message TaskRunSpec {
     // Id of the task to be invoked (no ambiguatity at this point
     FnRef fnRef = 1;
 
     // TaskId is the id of the task within the workflow
     string taskId = 2;
 
-    // Inputs contain all inputs to the task invocation
+    // Inputs contain all inputs to the task run
     map<string, TypedValue> inputs = 3;
 
     //
     string invocationId = 4;
 }
 
-message TaskInvocationStatus {
+message TaskRunStatus {
     enum Status {
         UNKNOWN = 0;
         SCHEDULED = 1; // Arrived at engine, but not yet schedu

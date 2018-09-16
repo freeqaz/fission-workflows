@@ -102,7 +102,7 @@ func TestFnenvInvoke(t *testing.T) {
 	headerVal := "stub-header-val"
 	headerKey := "stub-header-key"
 
-	result, err := fnenv.Invoke(&types.TaskInvocationSpec{
+	result, err := fnenv.Invoke(&types.TaskRunSpec{
 		TaskId:       "fooTask",
 		InvocationId: "fooInvocation",
 		Inputs: types.Inputs{

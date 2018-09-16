@@ -55,10 +55,10 @@ func makeTestScope() *Scope {
 		},
 		Status: &types.WorkflowInvocationStatus{
 			Status: types.WorkflowInvocationStatus_IN_PROGRESS,
-			Tasks: map[string]*types.TaskInvocation{
+			Tasks: map[string]*types.TaskRun{
 				"TaskA": {
-					Spec: &types.TaskInvocationSpec{},
-					Status: &types.TaskInvocationStatus{
+					Spec: &types.TaskRunSpec{},
+					Status: &types.TaskRunStatus{
 						Output: typedvalues.MustParse("some output"),
 					},
 				},

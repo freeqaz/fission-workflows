@@ -58,11 +58,11 @@ func (ws *WorkflowScheduler) Evaluate(request *ScheduleRequest) (*Schedule, erro
 	// Fill open tasks
 	openTasks := map[string]*types.TaskInstance{}
 	for id, t := range cwf {
-		if t.Invocation == nil || t.Invocation.Status.Status == types.TaskInvocationStatus_UNKNOWN {
+		if t.Invocation == nil || t.Invocation.Status.Status == types.TaskRunStatus_UNKNOWN {
 			openTasks[id] = t
 			continue
 		}
-		if t.Invocation.Status.Status == types.TaskInvocationStatus_FAILED {
+		if t.Invocation.Status.Status == types.TaskRunStatus_FAILED {
 
 			msg := fmt.Sprintf("Task '%v' failed", t.Invocation.ID())
 			if err := t.Invocation.GetStatus().GetError(); err != nil {

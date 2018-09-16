@@ -41,7 +41,7 @@ A runnable example of this function can be found in the [failwhale](../examples/
 */
 type FunctionFail struct{}
 
-func (fn *FunctionFail) Invoke(spec *types.TaskInvocationSpec) (*types.TypedValue, error) {
+func (fn *FunctionFail) Invoke(spec *types.TaskRunSpec) (*types.TypedValue, error) {
 	var output *types.TypedValue
 	switch len(spec.GetInputs()) {
 	case 0:

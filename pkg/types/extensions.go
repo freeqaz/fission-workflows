@@ -28,11 +28,11 @@ var invocationFinalStates = []WorkflowInvocationStatus_Status{
 	WorkflowInvocationStatus_FAILED,
 }
 
-var taskFinalStates = []TaskInvocationStatus_Status{
-	TaskInvocationStatus_FAILED,
-	TaskInvocationStatus_ABORTED,
-	TaskInvocationStatus_SKIPPED,
-	TaskInvocationStatus_SUCCEEDED,
+var taskFinalStates = []TaskRunStatus_Status{
+	TaskRunStatus_FAILED,
+	TaskRunStatus_ABORTED,
+	TaskRunStatus_SKIPPED,
+	TaskRunStatus_SUCCEEDED,
 }
 
 //
@@ -91,15 +91,15 @@ func (m *WorkflowInvocation) ID() string {
 	return m.GetMetadata().GetId()
 }
 
-func (m *WorkflowInvocation) TaskInvocation(id string) (*TaskInvocation, bool) {
+func (m *WorkflowInvocation) TaskRun(id string) (*TaskRun, bool) {
 	ti, ok := m.Status.Tasks[id]
 	return ti, ok
 }
 
-func (m *WorkflowInvocation) TaskInvocations() []*TaskInvocation {
-	var tasks []*TaskInvocation
+func (m *WorkflowInvocation) TaskRuns() []*TaskRun {
+	var tasks []*TaskRun
 	for id := range m.Status.Tasks {
-		task, _ := m.TaskInvocation(id)
+		task, _ := m.TaskRun(id)
 		tasks = append(tasks, task)
 	}
 	return tasks
@@ -109,17 +109,17 @@ func (m *WorkflowInvocation) TaskInvocations() []*TaskInvocation {
 // WorkflowInvocationStatus
 //
 
-func (m *WorkflowInvocationStatus) ToTaskStatus() *TaskInvocationStatus {
-	var statusMapping = map[WorkflowInvocationStatus_Status]TaskInvocationStatus_Status{
-		WorkflowInvocationStatus_UNKNOWN:     TaskInvocationStatus_UNKNOWN,
-		WorkflowInvocationStatus_SCHEDULED:   TaskInvocationStatus_SCHEDULED,
-		WorkflowInvocationStatus_IN_PROGRESS: TaskInvocationStatus_IN_PROGRESS,
-		WorkflowInvocationStatus_SUCCEEDED:   TaskInvocationStatus_SUCCEEDED,
-		WorkflowInvocationStatus_FAILED:      TaskInvocationStatus_FAILED,
-		WorkflowInvocationStatus_ABORTED:     TaskInvocationStatus_ABORTED,
+func (m *WorkflowInvocationStatus) ToTaskStatus() *TaskRunStatus {
+	var statusMapping = map[WorkflowInvocationStatus_Status]TaskRunStatus_Status{
+		WorkflowInvocationStatus_UNKNOWN:     TaskRunStatus_UNKNOWN,
+		WorkflowInvocationStatus_SCHEDULED:   TaskRunStatus_SCHEDULED,
+		WorkflowInvocationStatus_IN_PROGRESS: TaskRunStatus_IN_PROGRESS,
+		WorkflowInvocationStatus_SUCCEEDED:   TaskRunStatus_SUCCEEDED,
+		WorkflowInvocationStatus_FAILED:      TaskRunStatus_FAILED,
+		WorkflowInvocationStatus_ABORTED:     TaskRunStatus_ABORTED,
 	}
 
-	return &TaskInvocationStatus{
+	return &TaskRunStatus{
 		Status:    statusMapping[m.Status],
 		Error:     m.Error,
 		UpdatedAt: m.UpdatedAt,
@@ -141,18 +141,18 @@ func (m WorkflowInvocationStatus) Successful() bool {
 }
 
 //
-// TaskInvocation
+// TaskRun
 //
 
-func (m *TaskInvocation) ID() string {
+func (m *TaskRun) ID() string {
 	return m.GetMetadata().GetId()
 }
 
 //
-// TaskInvocationSpec
+// TaskRunSpec
 //
 
-func (m *TaskInvocationSpec) ToWorkflowSpec() *WorkflowInvocationSpec {
+func (m *TaskRunSpec) ToWorkflowSpec() *WorkflowInvocationSpec {
 	return &WorkflowInvocationSpec{
 		WorkflowId: m.FnRef.ID,
 		Inputs:     m.Inputs,
@@ -160,10 +160,10 @@ func (m *TaskInvocationSpec) ToWorkflowSpec() *WorkflowInvocationSpec {
 }
 
 //
-// TaskInvocationStatus
+// TaskRunStatus
 //
 
-func (ti TaskInvocationStatus) Finished() bool {
+func (ti TaskRunStatus) Finished() bool {
 	for _, event := range taskFinalStates {
 		if event == ti.Status {
 			return true
@@ -172,8 +172,8 @@ func (ti TaskInvocationStatus) Finished() bool {
 	return false
 }
 
-func (ti TaskInvocationStatus) Successful() bool {
-	return ti.GetStatus() == TaskInvocationStatus_SUCCEEDED
+func (ti TaskRunStatus) Successful() bool {
+	return ti.GetStatus() == TaskRunStatus_SUCCEEDED
 }
 
 //

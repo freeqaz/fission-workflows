@@ -10,7 +10,7 @@ import (
 
 func TestFunctionFail_InvokeEmpty(t *testing.T) {
 	fn := &FunctionFail{}
-	out, err := fn.Invoke(&types.TaskInvocationSpec{})
+	out, err := fn.Invoke(&types.TaskRunSpec{})
 	assert.Nil(t, out)
 	assert.EqualError(t, err, typedvalues.MustFormat(defaultErrMsg).(string))
 
@@ -19,7 +19,7 @@ func TestFunctionFail_InvokeEmpty(t *testing.T) {
 func TestFunctionFail_InvokeString(t *testing.T) {
 	fn := &FunctionFail{}
 	errMsg := "custom error message"
-	out, err := fn.Invoke(&types.TaskInvocationSpec{
+	out, err := fn.Invoke(&types.TaskRunSpec{
 		Inputs: typedvalues.Input(errMsg),
 	})
 	assert.Nil(t, out)

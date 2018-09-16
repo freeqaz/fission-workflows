@@ -113,7 +113,7 @@ func (a *ActionInvokeTask) Apply() error {
 	}
 
 	// Invoke task
-	spec := &types.TaskInvocationSpec{
+	spec := &types.TaskRunSpec{
 		FnRef:        task.Status.FnRef,
 		TaskId:       a.Task.Id,
 		InvocationId: a.Wfi.ID(),
@@ -138,7 +138,7 @@ func (a *ActionInvokeTask) Apply() error {
 	return nil
 }
 
-func (a *ActionInvokeTask) postTransformer(ti *types.TaskInvocation) error {
+func (a *ActionInvokeTask) postTransformer(ti *types.TaskRun) error {
 	task, _ := types.GetTask(a.Wf, a.Wfi, a.Task.Id)
 	if ti.GetStatus().Successful() {
 		output := task.GetSpec().GetOutput()
@@ -156,7 +156,7 @@ func (a *ActionInvokeTask) postTransformer(ti *types.TaskInvocation) error {
 	return nil
 }
 
-func (a *ActionInvokeTask) resolveOutput(ti *types.TaskInvocation, outputExpr *types.TypedValue) (*types.TypedValue, error) {
+func (a *ActionInvokeTask) resolveOutput(ti *types.TaskRun, outputExpr *types.TypedValue) (*types.TypedValue, error) {
 	log := a.logger()
 
 	// Setup the scope for the expressions

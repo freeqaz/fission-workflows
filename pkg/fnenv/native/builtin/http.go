@@ -59,7 +59,7 @@ A complete example of this function can be found in the [httpwhale](../examples/
 */
 type FunctionHTTP struct{}
 
-func (fn *FunctionHTTP) Invoke(spec *types.TaskInvocationSpec) (*types.TypedValue, error) {
+func (fn *FunctionHTTP) Invoke(spec *types.TaskRunSpec) (*types.TypedValue, error) {
 	// Setup request
 	contentType := httpconv.DetermineContentTypeInputs(spec.Inputs)
 	headers := httpconv.FormatHeaders(spec.Inputs)

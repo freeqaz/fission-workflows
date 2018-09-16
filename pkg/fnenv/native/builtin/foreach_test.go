@@ -10,7 +10,7 @@ import (
 
 func TestFunctionForeach_Invoke(t *testing.T) {
 	foreachElements := []interface{}{1, 2, 3, 4, "foo"}
-	out, err := (&FunctionForeach{}).Invoke(&types.TaskInvocationSpec{
+	out, err := (&FunctionForeach{}).Invoke(&types.TaskRunSpec{
 		Inputs: map[string]*types.TypedValue{
 			ForeachInputForeach: typedvalues.MustParse(foreachElements),
 			ForeachInputDo: typedvalues.MustParse(&types.TaskSpec{

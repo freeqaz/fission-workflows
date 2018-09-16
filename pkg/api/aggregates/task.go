@@ -9,32 +9,32 @@ import (
 )
 
 const (
-	TypeTaskInvocation = "task"
+	TypeTaskRun = "task"
 )
 
-type TaskInvocation struct {
+type TaskRun struct {
 	*fes.BaseEntity
-	*types.TaskInvocation
+	*types.TaskRun
 }
 
-func NewTaskInvocation(id string, fi *types.TaskInvocation) *TaskInvocation {
-	tia := &TaskInvocation{
-		TaskInvocation: fi,
+func NewTaskRun(id string, fi *types.TaskRun) *TaskRun {
+	tia := &TaskRun{
+		TaskRun: fi,
 	}
 
-	tia.BaseEntity = fes.NewBaseEntity(tia, *NewTaskInvocationAggregate(id))
+	tia.BaseEntity = fes.NewBaseEntity(tia, *NewTaskRunAggregate(id))
 
 	return tia
 }
 
-func NewTaskInvocationAggregate(id string) *fes.Aggregate {
+func NewTaskRunAggregate(id string) *fes.Aggregate {
 	return &fes.Aggregate{
 		Id:   id,
-		Type: TypeTaskInvocation,
+		Type: TypeTaskRun,
 	}
 }
 
-func (ti *TaskInvocation) ApplyEvent(event *fes.Event) error {
+func (ti *TaskRun) ApplyEvent(event *fes.Event) error {
 
 	eventData, err := fes.UnmarshalEventData(event)
 	if err != nil {
@@ -43,28 +43,28 @@ func (ti *TaskInvocation) ApplyEvent(event *fes.Event) error {
 
 	switch m := eventData.(type) {
 	case *events.TaskStarted:
-		ti.TaskInvocation = &types.TaskInvocation{
+		ti.TaskRun = &types.TaskRun{
 			Metadata: types.NewObjectMetadata(m.GetSpec().TaskId),
 			Spec:     m.GetSpec(),
-			Status: &types.TaskInvocationStatus{
-				Status:    types.TaskInvocationStatus_IN_PROGRESS,
+			Status: &types.TaskRunStatus{
+				Status:    types.TaskRunStatus_IN_PROGRESS,
 				UpdatedAt: event.Timestamp,
 			},
 		}
 	case *events.TaskSucceeded:
 		ti.Status.Output = m.GetResult().Output
-		ti.Status.Status = types.TaskInvocationStatus_SUCCEEDED
+		ti.Status.Status = types.TaskRunStatus_SUCCEEDED
 		ti.Status.UpdatedAt = event.Timestamp
 	case *events.TaskFailed:
 		// TODO validate event data
 		if ti.Status == nil {
-			ti.Status = &types.TaskInvocationStatus{}
+			ti.Status = &types.TaskRunStatus{}
 		}
 		ti.Status.Error = m.GetError()
 		ti.Status.UpdatedAt = event.Timestamp
-		ti.Status.Status = types.TaskInvocationStatus_FAILED
+		ti.Status.Status = types.TaskRunStatus_FAILED
 	case *events.TaskSkipped:
-		ti.Status.Status = types.TaskInvocationStatus_SKIPPED
+		ti.Status.Status = types.TaskRunStatus_SKIPPED
 		ti.Status.UpdatedAt = event.Timestamp
 	default:
 		log.WithFields(log.Fields{
@@ -74,14 +74,14 @@ func (ti *TaskInvocation) ApplyEvent(event *fes.Event) error {
 	return nil
 }
 
-func (ti *TaskInvocation) GenericCopy() fes.Entity {
-	n := &TaskInvocation{
-		TaskInvocation: ti.Copy(),
+func (ti *TaskRun) GenericCopy() fes.Entity {
+	n := &TaskRun{
+		TaskRun: ti.Copy(),
 	}
 	n.BaseEntity = ti.CopyBaseEntity(n)
 	return n
 }
 
-func (ti *TaskInvocation) Copy() *types.TaskInvocation {
-	return proto.Clone(ti.TaskInvocation).(*types.TaskInvocation)
+func (ti *TaskRun) Copy() *types.TaskRun {
+	return proto.Clone(ti.TaskRun).(*types.TaskRun)
 }

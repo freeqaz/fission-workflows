@@ -54,7 +54,7 @@ A complete example of this function can be found in the [switchwhale](../example
 */
 type FunctionSwitch struct{}
 
-func (fn *FunctionSwitch) Invoke(spec *types.TaskInvocationSpec) (*types.TypedValue, error) {
+func (fn *FunctionSwitch) Invoke(spec *types.TaskRunSpec) (*types.TypedValue, error) {
 	switchVal, err := fn.getSwitch(spec.Inputs)
 	if err != nil {
 		return nil, err

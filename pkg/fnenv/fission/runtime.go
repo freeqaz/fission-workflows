@@ -50,12 +50,12 @@ func NewFunctionEnv(executor *executor.Client, routerURL string) *FunctionEnv {
 // Invoke executes the task in a blocking way.
 //
 // spec contains the complete configuration needed for the execution.
-// It returns the TaskInvocationStatus with a completed (FINISHED, FAILED, ABORTED) status.
+// It returns the TaskRunStatus with a completed (FINISHED, FAILED, ABORTED) status.
 // An error is returned only when error occurs outside of the runtime's control.
-func (fe *FunctionEnv) Invoke(spec *types.TaskInvocationSpec, opts ...fnenv.InvokeOption) (*types.TaskInvocationStatus, error) {
+func (fe *FunctionEnv) Invoke(spec *types.TaskRunSpec, opts ...fnenv.InvokeOption) (*types.TaskRunStatus, error) {
 	cfg := fnenv.ParseInvokeOptions(opts)
 	ctxLog := log.WithField("fn", spec.FnRef)
-	if err := validate.TaskInvocationSpec(spec); err != nil {
+	if err := validate.TaskRunSpec(spec); err != nil {
 		return nil, err
 	}
 	fnRef := *spec.FnRef
@@ -105,20 +105,20 @@ func (fe *FunctionEnv) Invoke(spec *types.TaskInvocationSpec, opts ...fnenv.Invo
 	ctxLog.Infof("[%s][Content-Type]: %v ", fnRef.ID, resp.Header.Get("Content-Type"))
 	ctxLog.Infof("[%s][output]: '%s'", fnRef.ID, typedvalues.MustFormat(&output))
 
-	// Determine status of the task invocation
+	// Determine status of the task run
 	if resp.StatusCode >= 400 {
 		msg, _ := typedvalues.Format(&output)
 		ctxLog.Warnf("[%s] Failed %v: %v", resp.StatusCode, msg)
-		return &types.TaskInvocationStatus{
-			Status: types.TaskInvocationStatus_FAILED,
+		return &types.TaskRunStatus{
+			Status: types.TaskRunStatus_FAILED,
 			Error: &types.Error{
 				Message: fmt.Sprintf("fission function error: %v", msg),
 			},
 		}, nil
 	}
 
-	return &types.TaskInvocationStatus{
-		Status: types.TaskInvocationStatus_SUCCEEDED,
+	return &types.TaskRunStatus{
+		Status: types.TaskRunStatus_SUCCEEDED,
 		Output: &output,
 	}, nil
 }

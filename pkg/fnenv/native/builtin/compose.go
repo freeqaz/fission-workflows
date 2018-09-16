@@ -53,7 +53,7 @@ foo:
 // TODO avoid adding function-injected fields to compose
 type FunctionCompose struct{}
 
-func (fn *FunctionCompose) Invoke(spec *types.TaskInvocationSpec) (*types.TypedValue, error) {
+func (fn *FunctionCompose) Invoke(spec *types.TaskRunSpec) (*types.TypedValue, error) {
 
 	var output *types.TypedValue
 	switch len(spec.GetInputs()) {

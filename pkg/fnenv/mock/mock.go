@@ -13,7 +13,7 @@ import (
 )
 
 // Func is the type for mocked functions used in the mock.Runtime
-type Func func(spec *types.TaskInvocationSpec) (*types.TypedValue, error)
+type Func func(spec *types.TaskRunSpec) (*types.TypedValue, error)
 
 // Runtime mocks the implementation of the various runtime.
 //
@@ -24,18 +24,18 @@ type Func func(spec *types.TaskInvocationSpec) (*types.TypedValue, error)
 // Note it does not mock the resolver, which is mocked by the mock.Resolver
 type Runtime struct {
 	Functions       map[string]Func
-	AsyncResults    map[string]*types.TaskInvocation
+	AsyncResults    map[string]*types.TaskRun
 	ManualExecution bool
 }
 
 func NewRuntime() *Runtime {
 	return &Runtime{
 		Functions:    map[string]Func{},
-		AsyncResults: map[string]*types.TaskInvocation{},
+		AsyncResults: map[string]*types.TaskRun{},
 	}
 }
 
-func (mk *Runtime) InvokeAsync(spec *types.TaskInvocationSpec, opts ...fnenv.InvokeOption) (string, error) {
+func (mk *Runtime) InvokeAsync(spec *types.TaskRunSpec, opts ...fnenv.InvokeOption) (string, error) {
 	fnName := spec.FnRef.ID
 
 	if _, ok := mk.Functions[fnName]; !ok {
@@ -43,14 +43,14 @@ func (mk *Runtime) InvokeAsync(spec *types.TaskInvocationSpec, opts ...fnenv.Inv
 	}
 
 	invocationID := util.UID()
-	mk.AsyncResults[invocationID] = &types.TaskInvocation{
+	mk.AsyncResults[invocationID] = &types.TaskRun{
 		Metadata: &types.ObjectMetadata{
 			Id:        invocationID,
 			CreatedAt: ptypes.TimestampNow(),
 		},
 		Spec: spec,
-		Status: &types.TaskInvocationStatus{
-			Status:    types.TaskInvocationStatus_IN_PROGRESS,
+		Status: &types.TaskRunStatus{
+			Status:    types.TaskRunStatus_IN_PROGRESS,
 			UpdatedAt: ptypes.TimestampNow(),
 		},
 	}
@@ -80,23 +80,23 @@ func (mk *Runtime) MockComplete(fnInvocationID string) error {
 	result, err := fn(invocation.Spec)
 	if err != nil {
 		logrus.Infof("Function '%s' invocation resulted in an error: %v", fnName, err)
-		mk.AsyncResults[fnInvocationID].Status = &types.TaskInvocationStatus{
+		mk.AsyncResults[fnInvocationID].Status = &types.TaskRunStatus{
 			Output:    nil,
 			UpdatedAt: ptypes.TimestampNow(),
-			Status:    types.TaskInvocationStatus_FAILED,
+			Status:    types.TaskRunStatus_FAILED,
 		}
 	} else {
-		mk.AsyncResults[fnInvocationID].Status = &types.TaskInvocationStatus{
+		mk.AsyncResults[fnInvocationID].Status = &types.TaskRunStatus{
 			Output:    result,
 			UpdatedAt: ptypes.TimestampNow(),
-			Status:    types.TaskInvocationStatus_SUCCEEDED,
+			Status:    types.TaskRunStatus_SUCCEEDED,
 		}
 	}
 
 	return nil
 }
 
-func (mk *Runtime) Invoke(spec *types.TaskInvocationSpec, opts ...fnenv.InvokeOption) (*types.TaskInvocationStatus, error) {
+func (mk *Runtime) Invoke(spec *types.TaskRunSpec, opts ...fnenv.InvokeOption) (*types.TaskRunStatus, error) {
 	logrus.Info("Starting invocation...")
 	invocationID, err := mk.InvokeAsync(spec)
 	if err != nil {
@@ -117,16 +117,16 @@ func (mk *Runtime) Cancel(fnInvocationID string) error {
 		return fmt.Errorf("could not invoke unknown invocation '%s'", fnInvocationID)
 	}
 
-	invocation.Status = &types.TaskInvocationStatus{
+	invocation.Status = &types.TaskRunStatus{
 		Output:    nil,
 		UpdatedAt: ptypes.TimestampNow(),
-		Status:    types.TaskInvocationStatus_ABORTED,
+		Status:    types.TaskRunStatus_ABORTED,
 	}
 
 	return nil
 }
 
-func (mk *Runtime) Status(fnInvocationID string) (*types.TaskInvocationStatus, error) {
+func (mk *Runtime) Status(fnInvocationID string) (*types.TaskRunStatus, error) {
 	invocation, ok := mk.AsyncResults[fnInvocationID]
 	if !ok {
 		return nil, fmt.Errorf("could not invoke unknown invocation '%s'", fnInvocationID)

@@ -57,9 +57,9 @@ type Runtime interface {
 	// Invoke executes the task in a blocking way.
 	//
 	// spec contains the complete configuration needed for the execution.
-	// It returns the TaskInvocationStatus with a completed (FINISHED, FAILED, ABORTED) status.
+	// It returns the TaskRunStatus with a completed (FINISHED, FAILED, ABORTED) status.
 	// An error is returned only when error occurs outside of the runtime's control.
-	Invoke(spec *types.TaskInvocationSpec, opts ...InvokeOption) (*types.TaskInvocationStatus, error)
+	Invoke(spec *types.TaskRunSpec, opts ...InvokeOption) (*types.TaskRunStatus, error)
 }
 
 // AsyncRuntime is a more extended interface that a runtime can optionally support. It allows for asynchronous
@@ -67,7 +67,7 @@ type Runtime interface {
 type AsyncRuntime interface {
 	// InvokeAsync invokes a function in the runtime based on the spec and returns an identifier to allow the caller
 	// to reference the invocation.
-	InvokeAsync(spec *types.TaskInvocationSpec, opts ...InvokeOption) (asyncID string, err error)
+	InvokeAsync(spec *types.TaskRunSpec, opts ...InvokeOption) (asyncID string, err error)
 
 	// Cancel cancels a function invocation using the function invocation id.
 	Cancel(asyncID string) error
@@ -75,7 +75,7 @@ type AsyncRuntime interface {
 	// Status fetches the status of a invocation.
 	//
 	// The interface user is responsible for determining whether the status indicates that a invocation has completed.
-	Status(asyncID string) (*types.TaskInvocationStatus, error)
+	Status(asyncID string) (*types.TaskRunStatus, error)
 }
 
 // Notifier allows signalling of an incoming function invocation.

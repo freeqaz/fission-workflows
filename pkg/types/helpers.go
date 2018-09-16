@@ -24,9 +24,9 @@ func GetTaskContainers(wf *Workflow, wfi *WorkflowInvocation) map[string]*TaskIn
 	tasks := map[string]*TaskInstance{}
 	for _, task := range wf.Tasks() {
 		id := task.ID()
-		i, ok := wfi.TaskInvocation(id)
+		i, ok := wfi.TaskRun(id)
 		if !ok {
-			i = NewTaskInvocation(id)
+			i = NewTaskRun(id)
 		}
 		tasks[task.ID()] = &TaskInstance{
 			Task:       task,
@@ -35,9 +35,9 @@ func GetTaskContainers(wf *Workflow, wfi *WorkflowInvocation) map[string]*TaskIn
 	}
 	if wfi != nil {
 		for id := range wfi.Status.DynamicTasks {
-			i, ok := wfi.TaskInvocation(id)
+			i, ok := wfi.TaskRun(id)
 			if !ok {
-				i = NewTaskInvocation(id)
+				i = NewTaskRun(id)
 			}
 			task, _ := GetTask(wf, wfi, id)
 			tasks[task.ID()] = &TaskInstance{
@@ -159,11 +159,11 @@ func NewObjectMetadata(id string) *ObjectMetadata {
 	}
 }
 
-func NewTaskInvocation(id string) *TaskInvocation {
-	return &TaskInvocation{
+func NewTaskRun(id string) *TaskRun {
+	return &TaskRun{
 		Metadata: NewObjectMetadata(id),
-		Spec:     &TaskInvocationSpec{},
-		Status:   &TaskInvocationStatus{},
+		Spec:     &TaskRunSpec{},
+		Status:   &TaskRunStatus{},
 	}
 }
 
@@ -208,7 +208,7 @@ type WorkflowInstance struct {
 type TaskInstance struct {
 	Task *Task
 	// Invocation is nil if not yet invoked
-	Invocation *TaskInvocation
+	Invocation *TaskRun
 }
 
 type NamedTypedValue struct {
@@ -218,8 +218,8 @@ type NamedTypedValue struct {
 
 type Inputs map[string]*TypedValue
 
-func NewTaskInvocationSpec(invocationId string, taskId string, fnRef FnRef) *TaskInvocationSpec {
-	return &TaskInvocationSpec{
+func NewTaskRunSpec(invocationId string, taskId string, fnRef FnRef) *TaskRunSpec {
+	return &TaskRunSpec{
 		FnRef:        &fnRef,
 		TaskId:       taskId,
 		InvocationId: invocationId,

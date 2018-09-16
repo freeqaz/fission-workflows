@@ -54,7 +54,7 @@ A complete example of this function can be found in the [maybewhale](../examples
 */
 type FunctionIf struct{}
 
-func (fn *FunctionIf) Invoke(spec *types.TaskInvocationSpec) (*types.TypedValue, error) {
+func (fn *FunctionIf) Invoke(spec *types.TaskRunSpec) (*types.TypedValue, error) {
 
 	// Verify and get condition
 	expr, err := ensureInput(spec.GetInputs(), IfInputCondition)

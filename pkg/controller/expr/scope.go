@@ -37,7 +37,7 @@ type ObjectMetadata struct {
 // TaskScope holds information about a specific task execution within the current workflow invocation.
 type TaskScope struct {
 	*ObjectMetadata
-	Status    string // TaskInvocation status
+	Status    string // TaskRun status
 	UpdatedAt int64  // unix timestamp
 	Inputs    map[string]interface{}
 	Requires  map[string]*types.TaskDependencyParameters

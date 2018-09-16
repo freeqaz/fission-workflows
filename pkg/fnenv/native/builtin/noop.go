@@ -37,7 +37,7 @@ A complete example of this function can be found in the [fortunewhale](../exampl
 */
 type FunctionNoop struct{}
 
-func (fn *FunctionNoop) Invoke(spec *types.TaskInvocationSpec) (*types.TypedValue, error) {
+func (fn *FunctionNoop) Invoke(spec *types.TaskRunSpec) (*types.TypedValue, error) {
 
 	var output *types.TypedValue
 	switch len(spec.GetInputs()) {

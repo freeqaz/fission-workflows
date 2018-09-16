@@ -59,7 +59,7 @@ var cmdInvocation = cli.Command{
 					}
 					ti, ok := wfi.Status.Tasks[taskID]
 					if !ok {
-						fmt.Println("Task Invocation not found.")
+						fmt.Println("Task not found.")
 						return nil
 					}
 					b, err := yaml.Marshal(ti)
@@ -201,7 +201,7 @@ func invocationsList(out io.Writer, wfiAPI *httpclient.InvocationAPI, since time
 
 }
 
-func collectStatus(tasks map[string]*types.TaskSpec, taskStatus map[string]*types.TaskInvocation,
+func collectStatus(tasks map[string]*types.TaskSpec, taskStatus map[string]*types.TaskRun,
 	rows [][]string) [][]string {
 	var ids []string
 	for id := range tasks {
@@ -210,7 +210,7 @@ func collectStatus(tasks map[string]*types.TaskSpec, taskStatus map[string]*type
 	sort.Strings(ids)
 
 	for _, id := range ids {
-		status := types.TaskInvocationStatus_SCHEDULED.String()
+		status := types.TaskRunStatus_SCHEDULED.String()
 		updated := ""
 		started := ""
 

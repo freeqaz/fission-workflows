@@ -11,7 +11,7 @@ import (
 func TestFunctionSwitch_Invoke(t *testing.T) {
 	val := "case1Val"
 	fn := &FunctionSwitch{}
-	spec := &types.TaskInvocationSpec{
+	spec := &types.TaskRunSpec{
 		Inputs: map[string]*types.TypedValue{
 			SwitchInputCondition: typedvalues.ParseString("case1"),
 			SwitchInputCases: typedvalues.MustParse([]interface{}{
@@ -27,7 +27,7 @@ func TestFunctionSwitch_Invoke(t *testing.T) {
 
 func TestFunctionSwitch_InvokeDefaultCase(t *testing.T) {
 	fn := &FunctionSwitch{}
-	spec := &types.TaskInvocationSpec{
+	spec := &types.TaskRunSpec{
 		Inputs: map[string]*types.TypedValue{
 			SwitchInputCondition: typedvalues.ParseString("case1"),
 			SwitchInputCases: typedvalues.MustParse([]interface{}{
@@ -43,7 +43,7 @@ func TestFunctionSwitch_InvokeDefaultCase(t *testing.T) {
 
 func TestFunctionSwitch_InvokeNoCase(t *testing.T) {
 	fn := &FunctionSwitch{}
-	spec := &types.TaskInvocationSpec{
+	spec := &types.TaskRunSpec{
 		Inputs: map[string]*types.TypedValue{
 			SwitchInputCondition: typedvalues.MustParse("case1"),
 			"case2":              typedvalues.MustParse("case2"),
@@ -56,7 +56,7 @@ func TestFunctionSwitch_InvokeNoCase(t *testing.T) {
 
 func TestFunctionSwitch_InvokeNoSwitch(t *testing.T) {
 	fn := &FunctionSwitch{}
-	spec := &types.TaskInvocationSpec{
+	spec := &types.TaskRunSpec{
 		Inputs: map[string]*types.TypedValue{
 			"case2": typedvalues.MustParse("case2"),
 		},

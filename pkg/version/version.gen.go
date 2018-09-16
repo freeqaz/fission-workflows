@@ -7,14 +7,14 @@ const (
 	dateFormat string = time.RFC1123Z
 
 	// Git commit (e.g. 1b4716ab84903b2e477135a3dc5afdb07f685cb7)
-	GitCommit string = "75c8e3a498cb5f1928275ab901031f74baaf05b9"
+	GitCommit string = "7d5f57a3e22d6e684b038f30762a1b101e2210bf"
 
 	// Version contains a (potentially) human-readable version
 	// For example 1.1.0 or 1b4716ab84903b2e477135a3dc5afdb07f685cb7
-	Version string = "75c8e3a498cb5f1928275ab901031f74baaf05b9"
+	Version string = "7d5f57a3e22d6e684b038f30762a1b101e2210bf"
 
 	// gitDate is a date in RFC1123Z format
-	gitDate string = "Tue, 24 Jul 2018 21:35:17 +0200"
+	gitDate string = "Thu, 6 Sep 2018 12:52:05 +0200"
 )
 
 var (

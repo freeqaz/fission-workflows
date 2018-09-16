@@ -64,7 +64,7 @@ A complete example of this function can be found in the [whilewhale](../examples
 */
 type FunctionWhile struct{}
 
-func (fn *FunctionWhile) Invoke(spec *types.TaskInvocationSpec) (*types.TypedValue, error) {
+func (fn *FunctionWhile) Invoke(spec *types.TaskRunSpec) (*types.TypedValue, error) {
 	// Expr
 	exprTv, err := ensureInput(spec.Inputs, WhileInputExpr, typedvalues.TypeBool)
 	if err != nil {

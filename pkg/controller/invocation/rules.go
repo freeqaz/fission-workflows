@@ -133,7 +133,7 @@ func (cc *RuleCheckIfCompleted) Eval(cec controller.EvalContext) controller.Acti
 			finished = false
 			break
 		} else {
-			success = success && t.Status.Status == types.TaskInvocationStatus_SUCCEEDED
+			success = success && t.Status.Status == types.TaskRunStatus_SUCCEEDED
 		}
 	}
 	if finished {

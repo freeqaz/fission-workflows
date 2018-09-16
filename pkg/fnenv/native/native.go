@@ -21,7 +21,7 @@ const (
 
 // An InternalFunction is a function that will be executed in the same process as the invoker.
 type InternalFunction interface {
-	Invoke(spec *types.TaskInvocationSpec) (*types.TypedValue, error)
+	Invoke(spec *types.TaskRunSpec) (*types.TypedValue, error)
 }
 
 // FunctionEnv for executing low overhead functions, such as control flow constructs, inside the workflow engine
@@ -38,7 +38,7 @@ func NewFunctionEnv(fns map[string]InternalFunction) *FunctionEnv {
 	return env
 }
 
-func (fe *FunctionEnv) Invoke(spec *types.TaskInvocationSpec, opts ...fnenv.InvokeOption) (*types.TaskInvocationStatus, error) {
+func (fe *FunctionEnv) Invoke(spec *types.TaskRunSpec, opts ...fnenv.InvokeOption) (*types.TaskRunStatus, error) {
 	cfg := fnenv.ParseInvokeOptions(opts)
 	defer func() {
 		if r := recover(); r != nil {
@@ -48,7 +48,7 @@ func (fe *FunctionEnv) Invoke(spec *types.TaskInvocationSpec, opts ...fnenv.Invo
 			fmt.Println(string(debug.Stack()))
 		}
 	}()
-	if err := validate.TaskInvocationSpec(spec); err != nil {
+	if err := validate.TaskRunSpec(spec); err != nil {
 		return nil, err
 	}
 
@@ -70,18 +70,18 @@ func (fe *FunctionEnv) Invoke(spec *types.TaskInvocationSpec, opts ...fnenv.Invo
 			"fnID": fnID,
 			"err":  err,
 		}).Error("Internal function failed.")
-		return &types.TaskInvocationStatus{
+		return &types.TaskRunStatus{
 			UpdatedAt: ptypes.TimestampNow(),
-			Status:    types.TaskInvocationStatus_FAILED,
+			Status:    types.TaskRunStatus_FAILED,
 			Error: &types.Error{
 				Message: err.Error(),
 			},
 		}, nil
 	}
 
-	return &types.TaskInvocationStatus{
+	return &types.TaskRunStatus{
 		UpdatedAt: ptypes.TimestampNow(),
-		Status:    types.TaskInvocationStatus_SUCCEEDED,
+		Status:    types.TaskRunStatus_SUCCEEDED,
 		Output:    out,
 	}, nil
 }

@@ -36,15 +36,15 @@ func NewTaskAPI(runtime map[string]fnenv.Runtime, esClient fes.Backend, api *Dyn
 // Invoke starts the execution of a task, changing the state of the task into RUNNING.
 // Currently it executes the underlying function synchronously and manage the execution until completion.
 // TODO make asynchronous
-func (ap *Task) Invoke(spec *types.TaskInvocationSpec, opts ...CallOption) (*types.TaskInvocation, error) {
+func (ap *Task) Invoke(spec *types.TaskRunSpec, opts ...CallOption) (*types.TaskRun, error) {
 	cfg := parseCallOptions(opts)
-	err := validate.TaskInvocationSpec(spec)
+	err := validate.TaskRunSpec(spec)
 	if err != nil {
 		return nil, err
 	}
 
-	taskID := spec.TaskId // assumption: 1 task == 1 TaskInvocation (How to deal with retries? Same invocation?)
-	task := &types.TaskInvocation{
+	taskID := spec.TaskId // assumption: 1 task == 1 TaskRun (How to deal with retries? Same invocation?)
+	task := &types.TaskRun{
 		Metadata: &types.ObjectMetadata{
 			Id:        taskID,
 			CreatedAt: ptypes.TimestampNow(),
@@ -53,7 +53,7 @@ func (ap *Task) Invoke(spec *types.TaskInvocationSpec, opts ...CallOption) (*typ
 	}
 
 	aggregate := aggregates.NewWorkflowInvocationAggregate(spec.InvocationId)
-	event, err := fes.NewEvent(*aggregates.NewTaskInvocationAggregate(taskID), &events.TaskStarted{
+	event, err := fes.NewEvent(*aggregates.NewTaskRunAggregate(taskID), &events.TaskStarted{
 		Spec: spec,
 	})
 	event.Parent = aggregate
@@ -100,8 +100,8 @@ func (ap *Task) Invoke(spec *types.TaskInvocationSpec, opts ...CallOption) (*typ
 		}
 	}
 
-	if fnResult.Status == types.TaskInvocationStatus_SUCCEEDED {
-		event, err := fes.NewEvent(*aggregates.NewTaskInvocationAggregate(taskID), &events.TaskSucceeded{
+	if fnResult.Status == types.TaskRunStatus_SUCCEEDED {
+		event, err := fes.NewEvent(*aggregates.NewTaskRunAggregate(taskID), &events.TaskSucceeded{
 			Result: fnResult,
 		})
 		if err != nil {
@@ -128,7 +128,7 @@ func (ap *Task) Fail(invocationID string, taskID string, errMsg string) error {
 		return validate.NewError("taskID", errors.New("id should not be empty"))
 	}
 
-	event, err := fes.NewEvent(*aggregates.NewTaskInvocationAggregate(taskID), &events.TaskFailed{
+	event, err := fes.NewEvent(*aggregates.NewTaskRunAggregate(taskID), &events.TaskFailed{
 		Error: &types.Error{Message: errMsg},
 	})
 	if err != nil {

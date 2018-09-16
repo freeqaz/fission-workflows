@@ -9,7 +9,7 @@ import (
 )
 
 func TestFunctionJavascript_InvokeMap(t *testing.T) {
-	spec := &types.TaskInvocationSpec{
+	spec := &types.TaskRunSpec{
 		Inputs: map[string]*types.TypedValue{
 			JavascriptInputArgs: typedvalues.MustParse(map[string]interface{}{
 				"left":  2,
@@ -26,7 +26,7 @@ func TestFunctionJavascript_InvokeMap(t *testing.T) {
 }
 
 func TestFunctionJavascript_Invoke(t *testing.T) {
-	spec := &types.TaskInvocationSpec{
+	spec := &types.TaskRunSpec{
 		Inputs: map[string]*types.TypedValue{
 			JavascriptInputArgs: typedvalues.MustParse(10),
 			JavascriptInputExpr: typedvalues.MustParse("arg * 2"),

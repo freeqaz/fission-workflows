@@ -9,7 +9,7 @@ import (
 )
 
 func TestFunctionWhile_Invoke(t *testing.T) {
-	out, err := (&FunctionWhile{}).Invoke(&types.TaskInvocationSpec{
+	out, err := (&FunctionWhile{}).Invoke(&types.TaskRunSpec{
 		Inputs: map[string]*types.TypedValue{
 			WhileInputExpr:  typedvalues.MustParse(true).SetLabel("src", "{}"),
 			WhileInputLimit: typedvalues.MustParse(10),
@@ -25,7 +25,7 @@ func TestFunctionWhile_Invoke(t *testing.T) {
 }
 
 func TestFunctionWhile_InvokeCompletedInitial(t *testing.T) {
-	out, err := (&FunctionWhile{}).Invoke(&types.TaskInvocationSpec{
+	out, err := (&FunctionWhile{}).Invoke(&types.TaskRunSpec{
 		Inputs: map[string]*types.TypedValue{
 			WhileInputExpr:  typedvalues.MustParse(false).SetLabel("src", "{}"),
 			WhileInputLimit: typedvalues.MustParse(10),
@@ -42,7 +42,7 @@ func TestFunctionWhile_InvokeCompletedInitial(t *testing.T) {
 
 func TestFunctionWhile_InvokeCompleted(t *testing.T) {
 	prev := typedvalues.MustParse("prev result")
-	out, err := (&FunctionWhile{}).Invoke(&types.TaskInvocationSpec{
+	out, err := (&FunctionWhile{}).Invoke(&types.TaskRunSpec{
 		Inputs: map[string]*types.TypedValue{
 			WhileInputExpr:  typedvalues.MustParse(false).SetLabel("src", "{}"),
 			WhileInputLimit: typedvalues.MustParse(10),
@@ -59,7 +59,7 @@ func TestFunctionWhile_InvokeCompleted(t *testing.T) {
 }
 
 func TestFunctionWhile_Invoke_LimitExceeded(t *testing.T) {
-	out, err := (&FunctionWhile{}).Invoke(&types.TaskInvocationSpec{
+	out, err := (&FunctionWhile{}).Invoke(&types.TaskRunSpec{
 		Inputs: map[string]*types.TypedValue{
 			WhileInputExpr:  typedvalues.MustParse(true).SetLabel("src", "{}"),
 			WhileInputLimit: typedvalues.MustParse(10),

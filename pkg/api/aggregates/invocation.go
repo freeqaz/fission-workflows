@@ -38,7 +38,7 @@ func NewWorkflowInvocationAggregate(invocationID string) *fes.Aggregate {
 
 func (wi *WorkflowInvocation) ApplyEvent(event *fes.Event) error {
 	// If the event is a task event, use the Task Aggregate to resolve it.
-	if event.Aggregate.Type == TypeTaskInvocation {
+	if event.Aggregate.Type == TypeTaskRun {
 		return wi.applyTaskEvent(event)
 	}
 
@@ -58,7 +58,7 @@ func (wi *WorkflowInvocation) ApplyEvent(event *fes.Event) error {
 			Spec: m.GetSpec(),
 			Status: &types.WorkflowInvocationStatus{
 				Status:       types.WorkflowInvocationStatus_IN_PROGRESS,
-				Tasks:        map[string]*types.TaskInvocation{},
+				Tasks:        map[string]*types.TaskRun{},
 				UpdatedAt:    event.GetTimestamp(),
 				DynamicTasks: map[string]*types.Task{},
 			},
@@ -104,18 +104,18 @@ func (wi *WorkflowInvocation) applyTaskEvent(event *fes.Event) error {
 	taskID := event.Aggregate.Id
 	task, ok := wi.Status.Tasks[taskID]
 	if !ok {
-		task = types.NewTaskInvocation(taskID)
+		task = types.NewTaskRun(taskID)
 	}
-	ti := NewTaskInvocation(taskID, task)
+	ti := NewTaskRun(taskID, task)
 	err := ti.ApplyEvent(event)
 	if err != nil {
 		return err
 	}
 
 	if wi.Status.Tasks == nil {
-		wi.Status.Tasks = map[string]*types.TaskInvocation{}
+		wi.Status.Tasks = map[string]*types.TaskRun{}
 	}
-	wi.Status.Tasks[taskID] = ti.TaskInvocation
+	wi.Status.Tasks[taskID] = ti.TaskRun
 
 	return nil
 }

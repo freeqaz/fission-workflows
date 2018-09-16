@@ -11,7 +11,7 @@ func TestFunctionNoopPassInput(t *testing.T) {
 	expected := "noopnoop"
 	internalFunctionTest(t,
 		&FunctionNoop{},
-		&types.TaskInvocationSpec{
+		&types.TaskRunSpec{
 			Inputs: map[string]*types.TypedValue{
 				NoopInput: typedvalues.MustParse(expected),
 			},
@@ -22,7 +22,7 @@ func TestFunctionNoopPassInput(t *testing.T) {
 func TestFunctionNoopEmpty(t *testing.T) {
 	internalFunctionTest(t,
 		&FunctionNoop{},
-		&types.TaskInvocationSpec{
+		&types.TaskRunSpec{
 			Inputs: map[string]*types.TypedValue{},
 		},
 		nil)
@@ -31,7 +31,7 @@ func TestFunctionNoopEmpty(t *testing.T) {
 func TestFunctionNoopObject(t *testing.T) {
 	internalFunctionTest(t,
 		&FunctionNoop{},
-		&types.TaskInvocationSpec{
+		&types.TaskRunSpec{
 			Inputs: map[string]*types.TypedValue{
 				"foo":           typedvalues.MustParse(true),
 				"bar":           typedvalues.MustParse(false),

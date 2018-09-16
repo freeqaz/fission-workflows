@@ -20,10 +20,10 @@ func WithContext(ctx context.Context) CallOption {
 	}
 }
 
-func PostTransformer(fn func(ti *types.TaskInvocation) error) CallOption {
+func PostTransformer(fn func(ti *types.TaskRun) error) CallOption {
 	return func(op *CallConfig) {
 		op.postTransformer = func(i interface{}) error {
-			ti, ok := i.(*types.TaskInvocation)
+			ti, ok := i.(*types.TaskRun)
 			if !ok {
 				return errors.New("invalid call option")
 			}

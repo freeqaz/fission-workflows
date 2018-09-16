@@ -43,7 +43,7 @@ func ensureInput(inputs map[string]*types.TypedValue, key string, validTypes ...
 	return tv, nil
 }
 
-func internalFunctionTest(t *testing.T, fn native.InternalFunction, input *types.TaskInvocationSpec, expected interface{}) {
+func internalFunctionTest(t *testing.T, fn native.InternalFunction, input *types.TaskRunSpec, expected interface{}) {
 	output, err := fn.Invoke(input)
 	if err != nil {
 		t.Fatal(err)
