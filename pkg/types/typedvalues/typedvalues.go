@@ -118,6 +118,10 @@ func Unwrap(tv *TypedValue) (interface{}, error) {
 		return nil, nil
 	}
 
+	if cached, ok := cacheLookup(tv); ok {
+		return cached, nil
+	}
+
 	msg, err := UnwrapProto(tv)
 	if err != nil {
 		return nil, err
@@ -239,10 +243,13 @@ func Wrap(val interface{}) (*TypedValue, error) {
 	if err != nil {
 		return nil, err
 	}
-	// TODO cache already if safe (copied/cloned/primitive)
-	return &TypedValue{
+
+	tv := &TypedValue{
 		Value: marshaled,
-	}, nil
+	}
+	go cachePut(tv, val)
+
+	return tv, nil
 }
 
 func MustWrap(val interface{}) *TypedValue {

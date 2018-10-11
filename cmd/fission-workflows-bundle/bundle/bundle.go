@@ -29,6 +29,7 @@ import (
 	"github.com/fission/fission-workflows/pkg/fnenv/native/builtin"
 	"github.com/fission/fission-workflows/pkg/fnenv/workflows"
 	"github.com/fission/fission-workflows/pkg/scheduler"
+	"github.com/fission/fission-workflows/pkg/types/typedvalues"
 	"github.com/fission/fission-workflows/pkg/util"
 	"github.com/fission/fission-workflows/pkg/util/labels"
 	"github.com/fission/fission-workflows/pkg/util/pubsub"
@@ -191,6 +192,10 @@ func Run(ctx context.Context, opts *Options) error {
 	// Caches
 	invocationStore := getInvocationStore(app, esPub, eventStore)
 	workflowStore := getWorkflowStore(app, esPub, eventStore)
+	err = typedvalues.InitCache(1E4)
+	if err != nil {
+		log.Warnf("Failed to setup TypedValues cache", err)
+	}
 
 	//
 	// Function Runtimes

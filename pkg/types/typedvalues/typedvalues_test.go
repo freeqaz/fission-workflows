@@ -123,7 +123,7 @@ func TestValueTester(t *testing.T) {
 
 func BenchmarkParse(b *testing.B) {
 	for _, testCase := range parseFormatTestCases() {
-		b.Run(testCase.expectedType+"_parse", func(b *testing.B) {
+		b.Run(testCase.expectedType+"_wrap", func(b *testing.B) {
 			for n := 0; n < b.N; n++ {
 				Wrap(testCase.input)
 			}
@@ -132,7 +132,7 @@ func BenchmarkParse(b *testing.B) {
 	for _, testCase := range parseFormatTestCases() {
 		tv, _ := Wrap(testCase.input)
 
-		b.Run(testCase.expectedType+"_format", func(b *testing.B) {
+		b.Run(testCase.expectedType+"_unwrap", func(b *testing.B) {
 			for n := 0; n < b.N; n++ {
 				Unwrap(tv)
 			}
