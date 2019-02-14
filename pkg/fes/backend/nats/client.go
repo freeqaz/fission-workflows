@@ -87,9 +87,9 @@ func (es *EventStore) RunConnectionChecker() {
 			case <-time.After(10 * time.Second):
 				if es.conn.NatsConn().Status() == nats.CLOSED {
 					if err := es.reconnect(); err != nil {
-						logrus.Error("Failed to reconnect to NATS: %v", err)
+						logrus.Errorf("Failed to reconnect to NATS: %v", err)
 					} else {
-						logrus.Error("Reconnected to NATS: %v", err)
+						logrus.Errorf("Reconnected to NATS: %v", err)
 					}
 				}
 			}
